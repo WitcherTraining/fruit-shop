@@ -4,14 +4,10 @@ import com.epam.springboot.fruitshop.api.v1.mapper.CategoryMapper;
 import com.epam.springboot.fruitshop.api.v1.model.CategoryDTO;
 import com.epam.springboot.fruitshop.domain.Category;
 import com.epam.springboot.fruitshop.repositories.CategoryRepository;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;

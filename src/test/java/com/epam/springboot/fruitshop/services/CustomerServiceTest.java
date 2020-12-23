@@ -3,6 +3,7 @@ package com.epam.springboot.fruitshop.services;
 import com.epam.springboot.fruitshop.api.v1.mapper.CustomerMapper;
 import com.epam.springboot.fruitshop.api.v1.model.CategoryDTO;
 import com.epam.springboot.fruitshop.api.v1.model.CustomerDTO;
+import com.epam.springboot.fruitshop.controllers.v1.CustomerController;
 import com.epam.springboot.fruitshop.domain.Customer;
 import com.epam.springboot.fruitshop.repositories.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 class CustomerServiceTest {
@@ -80,7 +81,7 @@ class CustomerServiceTest {
 
         assertEquals(customerDTO.getFirstName(), savedDTO.getFirstName());
         assertEquals(customerDTO.getLastName(), savedCustomer.getLastName());
-        assertEquals("/api/v1/customers/1", savedDTO.getCustomerUrl());
+        assertEquals(CustomerController.BASE_URL + "/1", savedDTO.getCustomerUrl());
     }
 
     @Test
@@ -101,5 +102,16 @@ class CustomerServiceTest {
 
         assertEquals(customerDTO.getFirstName(), returnDTO.getFirstName());
         assertEquals(CUSTOMER_URL, returnDTO.getCustomerUrl());
+    }
+
+    @Test
+    void deleteCustomerById() {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(ID);
+
+        customerService.deleteCustomerById(anyLong());
+
+        verify(customerRepository, times(1)).deleteById(anyLong());
     }
 }

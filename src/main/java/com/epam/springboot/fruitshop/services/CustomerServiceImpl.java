@@ -2,6 +2,7 @@ package com.epam.springboot.fruitshop.services;
 
 import com.epam.springboot.fruitshop.api.v1.mapper.CustomerMapper;
 import com.epam.springboot.fruitshop.api.v1.model.CustomerDTO;
+import com.epam.springboot.fruitshop.controllers.v1.CustomerController;
 import com.epam.springboot.fruitshop.domain.Customer;
 import com.epam.springboot.fruitshop.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .stream()
                 .map(customer -> {
                     CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
-                    customerDTO.setCustomerUrl("/api/v1/customers/" + customer.getId());
+                    customerDTO.setCustomerUrl(getCustomerUrl(customer.getId()));
                     return customerDTO;
                 })
                 .collect(Collectors.toList());
@@ -55,7 +56,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(savedCustomer);
 
-        returnDTO.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
+        returnDTO.setCustomerUrl(getCustomerUrl(savedCustomer.getId()));
 
         return returnDTO;
     }
@@ -80,7 +81,20 @@ public class CustomerServiceImpl implements CustomerService {
                 customer.setLastName(customerDTO.getLastName());
             }
 
-            return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+            CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+
+            returnDTO.setCustomerUrl(getCustomerUrl(id));
+
+            return returnDTO;
         }).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public void deleteCustomerById(Long id) {
+        customerRepository.deleteById(id);
+    }
+
+    private String getCustomerUrl(Long id) {
+        return CustomerController.BASE_URL + "/" + id;
     }
 }
