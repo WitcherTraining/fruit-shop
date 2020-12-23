@@ -1,7 +1,9 @@
 package com.epam.springboot.fruitshop.controllers.v1;
 
 import com.epam.springboot.fruitshop.api.v1.model.CategoryDTO;
+import com.epam.springboot.fruitshop.controllers.RestResponseEntityExceptionHandler;
 import com.epam.springboot.fruitshop.services.CategoryService;
+import com.epam.springboot.fruitshop.services.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,7 +41,9 @@ class CategoryControllerTest {
 
         MockitoAnnotations.initMocks(this);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler())
+                .build();
     }
 
     @Test
@@ -57,7 +61,7 @@ class CategoryControllerTest {
         when(categoryService.getAllCategories()).thenReturn(categoryDTOS);
 
         mockMvc.perform(get("/api/v1/categories/")
-        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categories", hasSize(2)));
     }
@@ -74,5 +78,15 @@ class CategoryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
+    }
+
+    @Test
+    public void testGetByNameNotFound() throws Exception {
+
+        when(categoryService.getCategoryByName(anyString())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get("/api/v1/categories/Yevgeniy")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
