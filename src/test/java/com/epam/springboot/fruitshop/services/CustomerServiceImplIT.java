@@ -1,12 +1,12 @@
 package com.epam.springboot.fruitshop.services;
 
 import com.epam.springboot.fruitshop.api.v1.mapper.CustomerMapper;
-import com.epam.springboot.fruitshop.api.v1.mapper.CustomerMapperImpl;
 import com.epam.springboot.fruitshop.api.v1.model.CustomerDTO;
 import com.epam.springboot.fruitshop.bootstrap.Bootstrap;
 import com.epam.springboot.fruitshop.domain.Customer;
 import com.epam.springboot.fruitshop.repositories.CategoryRepository;
 import com.epam.springboot.fruitshop.repositories.CustomerRepository;
+import com.epam.springboot.fruitshop.repositories.VendorRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +32,9 @@ public class CustomerServiceImplIT {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    VendorRepository vendorRepository;
+
     CustomerService customerService;
 
     @Before
@@ -40,7 +43,7 @@ public class CustomerServiceImplIT {
         System.out.println(customerRepository.findAll().size());
 
         //setup data for testing
-        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository);
+        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository, vendorRepository);
         bootstrap.run(); // load data
 
         customerService = new CustomerServiceImpl(customerRepository, CustomerMapper.INSTANCE);
